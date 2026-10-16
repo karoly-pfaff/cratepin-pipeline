@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "projectId": "vite-consumer",
+  "profiles": {
+    "background-webp": {
+      "kind": "image",
+      "webp": { "lossless": false, "quality": 82, "keepSmaller": true }
+    },
+    "actor-lossless": {
+      "kind": "image",
+      "resize": { "width": 256, "height": 256, "fit": "contain" },
+      "webp": { "lossless": true, "keepSmaller": false }
+    }
+  },
+  "profileRules": [
+    { "match": "scenes/*/backgrounds/**", "profile": "background-webp" },
+    { "match": "scenes/*/characters/**", "profile": "actor-lossless" }
+  ],
+  "assets": [
+    { "source": "scenes/forest/characters/fox.png", "id": "character.fox", "role": "actor" },
+    { "source": "scenes/forest/voice/hu/find-the-fox.mp3", "locale": "hu" }
+  ]
+}

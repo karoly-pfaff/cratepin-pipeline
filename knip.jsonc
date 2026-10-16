@@ -1,0 +1,6 @@
+{
+  "$schema": "./node_modules/knip/schema-jsonc.json",
+  // Unit tests sit next to the module they test; integration and end-to-end tests live in tests/.
+  "entry": ["scripts/*.mjs", "sources/**/*.test.ts", "tests/**/*.test.mjs"],
+  "project": ["sources/**/*.ts", "scripts/**/*.mjs", "tests/**/*.mjs"],
+}

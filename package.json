@@ -1,0 +1,82 @@
+{
+  "name": "@karoly-pfaff/cratepin",
+  "version": "1.0.0-beta.1",
+  "private": false,
+  "type": "module",
+  "description": "Pinned originals, verified media builds and offline release recovery",
+  "license": "MIT",
+  "funding": "https://github.com/sponsors/karoly-pfaff",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/karoly-pfaff/cratepin-pipeline.git"
+  },
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "bin": {
+    "cratepin": "./build/cli/main.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "import": "./build/index.js"
+    }
+  },
+  "files": [
+    "build",
+    "docs/**/*.md",
+    "examples/cratepin.config.json",
+    "examples/vite-consumer/README.md",
+    "examples/vite-consumer/ci/game-build.yml",
+    "examples/vite-consumer/cratepin.config.json",
+    "examples/vite-consumer/index.html",
+    "examples/vite-consumer/package.json",
+    "examples/vite-consumer/public/favicon.svg",
+    "examples/vite-consumer/src/**/*.js",
+    "examples/vite-consumer/src/**/*.json",
+    "examples/vite-consumer/vite.config.js"
+  ],
+  "scripts": {
+    "clean": "node scripts/clean.mjs",
+    "build": "npm run clean && tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test \"sources/**/*.test.ts\" \"tests/**/*.test.mjs\"",
+    "test:fault-sweep": "node scripts/fault-sweep.mjs",
+    "test:coverage": "node --test --experimental-test-coverage --test-coverage-include=sources/**/*.ts --test-coverage-exclude=sources/**/*.test.ts --test-coverage-exclude=sources/**/*.test-support.ts --test-coverage-lines=90 --test-coverage-functions=90 --test-coverage-branches=85 \"sources/**/*.test.ts\" \"tests/**/*.test.mjs\"",
+    "lint": "npm run lint:code && npm run lint:duplicates && npm run lint:dead-code",
+    "lint:code": "eslint . --max-warnings=0 --cache --cache-strategy content --cache-location node_modules/.cache/eslint/",
+    "lint:fix": "eslint . --fix --max-warnings=0",
+    "lint:duplicates": "jscpd --config .jscpd.json --no-colors --no-tips",
+    "lint:dead-code": "knip --no-progress --treat-config-hints-as-errors --treat-tag-hints-as-errors",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check:docs": "node scripts/check-docs.mjs",
+    "check:plan": "node scripts/check-plan.mjs",
+    "check:package": "node scripts/check-package.mjs",
+    "package:cache": "node scripts/prepare-package-cache.mjs",
+    "candidate:prepare": "node scripts/prepare-candidate.mjs",
+    "check": "npm run typecheck && npm run format:check && npm run lint && npm run check:docs && npm run check:plan && npm run test:coverage && npm run build && npm run check:package",
+    "prepack": "npm run check"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@types/node": "24.10.0",
+    "eslint": "10.11.0",
+    "eslint-config-prettier": "10.1.8",
+    "eslint-plugin-sonarjs": "4.2.0",
+    "globals": "14.0.0",
+    "jscpd": "5.0.14",
+    "knip": "6.31.0",
+    "prettier": "3.9.6",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.65.0"
+  },
+  "dependencies": {
+    "sharp": "0.35.5"
+  },
+  "publishConfig": {
+    "access": "public",
+    "tag": "beta",
+    "registry": "https://npm.pkg.github.com/"
+  }
+}

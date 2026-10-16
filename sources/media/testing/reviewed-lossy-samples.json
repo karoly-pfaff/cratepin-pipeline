@@ -1,0 +1,49 @@
+{
+  "decision": "approved",
+  "decidedOn": "2026-10-13",
+  "reviewer": "project owner",
+  "statement": "Jóváhagyom, haladjunk",
+  "fingerprint": {
+    "transformVersion": 1,
+    "sharp": "0.35.5",
+    "libvips": "8.18.7",
+    "libwebp": "1.6.0",
+    "pngLibrary": "libpng 1.6.58",
+    "lcms": "2.19.1",
+    "zlib": "2.3.3",
+    "platform": "win32",
+    "arch": "x64"
+  },
+  "samples": [
+    {
+      "fixture": "smooth-background",
+      "quality": 50,
+      "outputSha256": "789592a71be43d2c6cf5e1bdc8699039de374f3f6a3fb94c5781a6a7ff1e4498"
+    },
+    {
+      "fixture": "smooth-background",
+      "quality": 82,
+      "outputSha256": "07c69cbe51f6cdfb63551f754c92f6b78fc7578c1a87afaf8d90f474523ce4f5"
+    },
+    {
+      "fixture": "soft-edged-sprite",
+      "quality": 50,
+      "outputSha256": "5071caede5d9d627366cbf8f6f225978fba1f327b973421b66c1f04fe6a0ce2c"
+    },
+    {
+      "fixture": "soft-edged-sprite",
+      "quality": 82,
+      "outputSha256": "8f3da90b39cae2e9aeff90f69eaa37fd67a4c30ded3c9e5429f2aac2f562e3a4"
+    },
+    {
+      "fixture": "saturated-scene",
+      "quality": 50,
+      "outputSha256": "f3ae3bea20457d6983603acb4175223d9f6e9606180443532f5ab83e836e273c"
+    },
+    {
+      "fixture": "saturated-scene",
+      "quality": 82,
+      "outputSha256": "74eb924ce48381b18d482c1cbb6c2d94f2bb65d59055635d1cb2ef2c0c03f0cd"
+    }
+  ]
+}

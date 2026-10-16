@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "projectId": "example-game",
+  "sourceDir": "assets",
+  "outputDir": "apps/game/public/assets",
+  "sources": {
+    "include": ["app/**/*.{png,gif,mp3}", "scenes/**/*.{png,gif,mp3}"]
+  },
+  "r2": {
+    "read": {
+      "transport": "public-http",
+      "publicBaseUrl": "https://assets.example.com/"
+    }
+  },
+  "profiles": {
+    "actor-512": {
+      "kind": "image",
+      "resize": {
+        "width": 512,
+        "height": 512,
+        "fit": "contain"
+      }
+    },
+    "artwork-webp": {
+      "kind": "image",
+      "webp": {
+        "lossless": true,
+        "keepSmaller": true
+      }
+    },
+    "background-webp": {
+      "kind": "image",
+      "webp": {
+        "lossless": false,
+        "quality": 82,
+        "keepSmaller": true
+      }
+    },
+    "ui-lossless": {
+      "kind": "image",
+      "webp": {
+        "lossless": true,
+        "keepSmaller": false
+      }
+    }
+  },
+  "profileRules": [
+    {
+      "match": "scenes/*/images/characters/**/*.png",
+      "profile": "actor-512"
+    },
+    {
+      "match": "scenes/*/images/objects/**/*.png",
+      "profile": "actor-512"
+    },
+    {
+      "match": "scenes/*/images/backgrounds/**/*.png",
+      "profile": "background-webp"
+    },
+    {
+      "match": "scenes/*/images/illustrations/**/*.png",
+      "profile": "artwork-webp"
+    },
+    {
+      "match": "app/ui/**/*.png",
+      "profile": "ui-lossless"
+    }
+  ],
+  "assets": [
+    {
+      "source": "scenes/forest/images/characters/fox.png",
+      "id": "character.fox",
+      "role": "actor"
+    },
+    {
+      "source": "scenes/forest/audio/voice/hu/prompt-find-fox.mp3",
+      "locale": "hu"
+    }
+  ],
+  "limits": {
+    "concurrency": 4
+  }
+}

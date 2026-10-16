@@ -1,0 +1,18 @@
+node_modules/
+build/
+coverage/
+*.tgz
+.env
+.env.*
+!.env.example
+.cratepin-cache/
+assets/source/
+public/assets/
+.cratepin-state/
+# Retained pre-rename release evidence and caches; never include in source exports.
+.asset-pipeline-state/
+.asset-cache/
+.DS_Store
+
+# Local development context and evidence; excluded from source exports
+/.local/

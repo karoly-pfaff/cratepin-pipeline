@@ -1,0 +1,16 @@
+name: Cratepin defect
+description: Report config, transfer, integrity, conversion or output problems.
+body:
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction and tool/platform versions
+      description: Use synthetic assets. Omit credentials, presigned URLs and private media.
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: Expected and actual behavior; error code
+    validations:
+      required: true

@@ -1,0 +1,83 @@
+# Continuous integration for a game that builds its assets with cratepin. Copy it to
+# .github/workflows/ in the game repository. Only the bucket-scoped read-only pair ever enters CI;
+# push is an author action and never runs here.
+name: Game build
+
+on:
+  push:
+    branches: [main]
+  # Never pull_request_target, nor a workflow_run that checks out pull request code with
+  # secrets: a fork's pull request runs its own code, and that code sees every secret its job has.
+  pull_request:
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  trusted:
+    # Pushes to this repository and pull requests from its own branches.
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    # Repository secrets R2_ENDPOINT, R2_BUCKET and the read-only pair, never a writer key. GitHub
+    # gives no secret to a pull_request run from a fork (in a private repository keep "Send
+    # secrets to workflows from fork pull requests" off): that, not this `if`, keeps them from
+    # forks, whose own workflow edits could name any job.
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: https://npm.pkg.github.com
+          scope: '@karoly-pfaff'
+      - run: npm ci --ignore-scripts
+        env:
+          NODE_AUTH_TOKEN: ${{ github.token }}
+      # Never claims, downloads in progress or quarantine. Originals count only when their bytes
+      # match the locked hash; derivatives are checked only against their own cached record, so
+      # this job must restore only caches trusted jobs saved. Caches a fork's pull request saves
+      # stay in that pull request's scope, and the fork job below only restores.
+      - uses: actions/cache@v4
+        with:
+          path: |
+            .cratepin-cache/cratepin-cache.json
+            .cratepin-cache/originals
+            .cratepin-cache/derivatives
+          key: cratepin-cache-${{ runner.os }}-${{ hashFiles('cratepin-lock.json', 'cratepin.config.json') }}
+          restore-keys: cratepin-cache-${{ runner.os }}-
+      # prebuild gets the pinned originals the cache lacks, builds and verifies the assets.
+      - run: npm run build
+        env:
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+          R2_READ_ACCESS_KEY_ID: ${{ secrets.R2_READ_ACCESS_KEY_ID }}
+          R2_READ_SECRET_ACCESS_KEY: ${{ secrets.R2_READ_SECRET_ACCESS_KEY }}
+
+  fork:
+    # Pull requests from forks get no secret: they build from the cache the trusted job saved.
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: https://npm.pkg.github.com
+          scope: '@karoly-pfaff'
+      - run: npm ci --ignore-scripts
+        env:
+          NODE_AUTH_TOKEN: ${{ github.token }}
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            .cratepin-cache/cratepin-cache.json
+            .cratepin-cache/originals
+            .cratepin-cache/derivatives
+          key: cratepin-cache-${{ runner.os }}-${{ hashFiles('cratepin-lock.json', 'cratepin.config.json') }}
+          restore-keys: cratepin-cache-${{ runner.os }}-
+      # Offline: no request, no credential. An original the cache lacks (one the pull request
+      # added) fails it with NOT_FOUND, exit 10, and a CACHE_MISS issue naming that original. An
+      # author pushes it and commits the updated lock to main; once main's trusted job has cached
+      # it, re-run this job. With the public-http read transport, `npm run build` works here too.
+      - run: npm run assets:build:offline
+      - run: npx vite build

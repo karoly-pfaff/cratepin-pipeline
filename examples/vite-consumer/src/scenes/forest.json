@@ -1,0 +1,5 @@
+{
+  "background": "scenes/forest/backgrounds/meadow",
+  "actor": "character.fox",
+  "prompt": "scenes/forest/voice/hu/find-the-fox"
+}
